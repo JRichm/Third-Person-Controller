@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour {
 
     private void HandleMouseClick() {
         if (weaponInventory.Count > 0) {
-            weaponInventory[0].GetComponent<GunScript>().Shoot();
+            weaponInventory[0].GetComponent<GunScript>().HandleShoot();
         }
     }
 

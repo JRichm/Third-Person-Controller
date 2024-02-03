@@ -12,9 +12,12 @@ public class GunScript : MonoBehaviour {
     private int currBullets;
     private int rsrvBullets;
     private int maxAmmo;
-
+    private float timeBetweenShots;
+    private Camera userCamera;
 
     private InteractScript interactScript;
+    private AudioSource audioSource;
+    [SerializeField] private GameObject shootFromPoint;
 
     private void Start() {
 
@@ -23,14 +26,19 @@ public class GunScript : MonoBehaviour {
         currBullets = clipSize;
         maxAmmo = clipSize * 5;
         rsrvBullets = clipSize * 2;
+        timeBetweenShots = 0.5f;
 
         interactScript = this.AddComponent<InteractScript>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    public void Shoot() {
+    public void HandleShoot() {
         if (currBullets > 0) {
             Debug.Log("Shot bullet");
+            audioSource.Play();
+            ShowTracer();
             currBullets--;
+
         } else if (rsrvBullets > 0) {
             Reload();
         }
@@ -60,5 +68,11 @@ public class GunScript : MonoBehaviour {
 
     public void PickUp(PlayerController controller) {
         controller.EquipWeapon(this.gameObject);
+    }
+
+    private void ShowTracer() {
+        GameObject newTracer = new GameObject("String");
+        TracerScript tracerScript = newTracer.AddComponent<TracerScript>();
+        tracerScript.ShowTracer(shootFromPoint.transform, userCamera);
     }
 }

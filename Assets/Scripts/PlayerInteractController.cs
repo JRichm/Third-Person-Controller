@@ -18,10 +18,10 @@ public class PlayerInteractController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position + (Vector3.up * 2), interactRange);
-
-        Debug.DrawRay(transform.position + (Vector3.up * 2), controller.cameraHolder.transform.forward * interactRange, Color.red);
-    }
+    //  private void OnDrawGizmos() {
+    //  Gizmos.color = Color.yellow;
+    //  Gizmos.DrawWireSphere(transform.position + (Vector3.up * 2), interactRange);
+    //
+    //  Debug.DrawRay(transform.position + (Vector3.up * 2), controller.cameraHolder.transform.forward * interactRange, Color.red);
+    //}
 }
