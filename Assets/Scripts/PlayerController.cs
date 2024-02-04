@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private float rotationSpeed = 600f;
     [SerializeField] private float jumpForce = 1f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] public Camera userCamera;
     [SerializeField] public GameObject cameraHolder;
     [SerializeField] private GameObject playerObject;
     [SerializeField] private GameObject weaponHolder;

@@ -1,47 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class TracerScript : MonoBehaviour
 {
     private LineRenderer tracerRenderer;
+    private float width;
+    public bool useCurve = true;
 
-    private void Start() {
+    private void Awake() {
         tracerRenderer = this.AddComponent<LineRenderer>();
+        width = 0.25f;
     }
 
-    public void ShowTracer(Transform shootPoint, Camera playerCamera) {
+    public void ShowTracer(Vector3 shootFromPoint, Vector3 bulletLandPoint, Material tracerMaterial) {
+        Vector3[] points = new Vector3[] { shootFromPoint, bulletLandPoint };
+        tracerRenderer.SetPositions(points);
+        tracerRenderer.SetPosition(0, shootFromPoint);
+        tracerRenderer.SetPosition(1, bulletLandPoint);
+        tracerRenderer.material = tracerMaterial;
+    }
 
-        RaycastHit lookatPoint;
-
-
-
-
-        // get point user is looking at
-        
-        // if point hits somethings
-            // draw tracer from gun to hit point
-
-        // else
-            // draw tracer from gun to lookat point
-
-
-
-
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(shootPoint.position, -shootPoint.right, out hit)) {
-            Debug.DrawRay(shootPoint.position, -shootPoint.right * hit.distance, Color.green, 1000);
-            Debug.Log("Did Hit");
+    private void Update() {
+        AnimationCurve curve = new AnimationCurve();
+        if (useCurve) {
+            curve.AddKey(0.0f, width);
+            curve.AddKey(10, width);
         } else {
-            Debug.DrawRay(shootPoint.position, -shootPoint.right * 1000, Color.red, 1000);
-            Debug.Log("Did not Hit");
+            curve.AddKey(0.0f, width);
+            curve.AddKey(3.0f, width);
         }
 
-        //tracerRenderer.positionCount = 2;
-        //tracerRenderer.SetPosition(0, shootPoint.position);
-        //tracerRenderer.SetPosition(1,)
+        tracerRenderer.widthCurve = curve;
+        tracerRenderer.widthMultiplier = width;
+
+        width -= Time.deltaTime / 1.25f;
+        if (width < 0) {
+            Destroy(this.gameObject);
+        }
     }
 }

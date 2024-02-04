@@ -13,11 +13,12 @@ public class GunScript : MonoBehaviour {
     private int rsrvBullets;
     private int maxAmmo;
     private float timeBetweenShots;
-    private Camera userCamera;
+    private Camera playerCamera;
 
     private InteractScript interactScript;
     private AudioSource audioSource;
     [SerializeField] private GameObject shootFromPoint;
+    [SerializeField] private Material tracerMaterial;
 
     private void Start() {
 
@@ -34,12 +35,22 @@ public class GunScript : MonoBehaviour {
 
     public void HandleShoot() {
         if (currBullets > 0) {
-            Debug.Log("Shot bullet");
-            audioSource.Play();
-            ShowTracer();
-            currBullets--;
 
-        } else if (rsrvBullets > 0) {
+            RaycastHit lookatPoint;
+
+            Vector3 bulletLandPoint;
+
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out lookatPoint)) {
+                bulletLandPoint = lookatPoint.point;
+            } else {
+                bulletLandPoint = playerCamera.transform.forward * 1000;
+            }
+
+            audioSource.Play();
+            ShowTracer(bulletLandPoint);
+            currBullets--;
+        } else if (rsrvBullets < 0) {
+            Debug.Log("No ammo");
             Reload();
         }
     }
@@ -68,11 +79,12 @@ public class GunScript : MonoBehaviour {
 
     public void PickUp(PlayerController controller) {
         controller.EquipWeapon(this.gameObject);
+        playerCamera = controller.userCamera;
     }
 
-    private void ShowTracer() {
-        GameObject newTracer = new GameObject("String");
+    private void ShowTracer(Vector3 bulletLandPoint) {
+        GameObject newTracer = new GameObject("Tracer");
         TracerScript tracerScript = newTracer.AddComponent<TracerScript>();
-        tracerScript.ShowTracer(shootFromPoint.transform, userCamera);
+        tracerScript.ShowTracer(shootFromPoint.transform.position, bulletLandPoint, tracerMaterial);
     }
 }
